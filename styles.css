@@ -1,0 +1,10 @@
+#board {
+    display: grid;
+    background-color: grey;
+    width: max(33vw, 50vh);
+    height: max(33vw, 50vh);
+    grid-template-columns: 1fr 1fr 1fr;
+    grid-template-rows: 1fr 1fr 1fr;
+    column-gap: 5px;
+    row-gap: 5px;
+}
