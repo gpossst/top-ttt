@@ -1,17 +1,44 @@
-let gameNumber = 0
+/* eslint-disable no-plusplus */
+
+// create player
+const newPlayer = (mark) => {
+  const playerScore = 0;
+  return (playerScore, mark);
+};
 
 // create game
 const newGame = () => {
-  let gameArray = ['','','','','','','','',''];
+  const gameArray = ['', '', '', '', '', '', '', '', ''];
+  const playerOneScoreDiv = document.querySelector('#player-one-score');
+  const playerTwoScoreDiv = document.querySelector('#player-two-score');
+  const playerOne = newPlayer('x');
+  const playerTwo = newPlayer('o');
+
   const popBoard = () => {
+    const gameBoard = document.querySelector('#board');
     for (let i = 0; i < 9; i++) {
       const newSquare = document.createElement('div');
       newSquare.textContent = gameArray[i];
       gameBoard.appendChild(newSquare);
     }
   };
+  return { playerOne, playerTwo };
+};
 
-  const winCheck = (gameArray) => {
+const gameObject = newGame();
+
+// universal methods
+const gameMethods = (() => {
+// player win methods
+  const playerOneWin = () => {
+    gameObject.playerOne.playerScore++;
+  };
+  const playerTwoWin = () => {
+    gameObject.playerTwo.playerScore++;
+  };
+
+  // win check
+  const winCheck = () => {
     const WINNING_COMBINATIONS = [
       [0, 1, 2],
       [3, 4, 5],
@@ -20,38 +47,16 @@ const newGame = () => {
       [1, 4, 7],
       [2, 5, 8],
       [0, 4, 8],
-      [2, 4, 6]
+      [2, 4, 6],
     ];
-    for (let i = 0; i < WINNING_COMBINATIONS.length; i++){
-      if (gameArray[WINNING_COMBINATIONS[i][0]] == 'x' && gameArray[WINNING_COMBINATIONS[i][1]] == 'x' && gameArray[WINNING_COMBINATIONS[i][2]] == 'x') {
+
+    for (let i = 0; i < WINNING_COMBINATIONS.length; i++) {
+      if (gameObject.gameArray[WINNING_COMBINATIONS[i][0]] === 'x' && gameObject.gameArray[WINNING_COMBINATIONS[i][1]] === 'x' && gameObject.gameArray[WINNING_COMBINATIONS[i][2]] === 'x') {
         playerOneWin();
-      } else if (gameArray[WINNING_COMBINATIONS[i][0]] == 'o' && gameArray[WINNING_COMBINATIONS[i][1]] == 'o' && gameArray[WINNING_COMBINATIONS[i][2]] == 'o')
+      } else if (gameObject.gameArray[WINNING_COMBINATIONS[i][0]] === 'o' && gameObject.gameArray[WINNING_COMBINATIONS[i][1]] === 'o' && gameObject.gameArray[WINNING_COMBINATIONS[i][2]] === 'o') {
+        playerTwoWin();
+      }
     }
-  }
-
-  const createPlayers = () => {
-    const playerOne = newPlayer('x');
-    const playerTwo = newPlayer('o');
-  }
-
-  // make a function that sets game array to 0 or creates a new game
-  const playerOneWin = () => {
-    playerOne.playerScore++;
-  }
-  const playerTwoWin = () => {
-    playerOne.playerScore++;
-  }
-
-  gameNumber++;
-};
-
-// create player
-
-const newPlayer = (mark) => {
-  let playerScore = 0;
-  const mark = mark
-  return (playerScore , mark)
-};
-
-const PLAYER_X_CLASS = 'x'
-const PLAYER_O_CLASS = 'circle'
+  };
+  return { playerOneWin, playerTwoWin };
+})();
