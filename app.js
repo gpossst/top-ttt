@@ -1,44 +1,57 @@
 /* eslint-disable no-plusplus */
 
+const newScreen = document.querySelector('#new-screen');
+const newGameBtn = document.querySelector('#new-game');
+
 // create player
 const newPlayer = (mark) => {
+  // eslint-disable-next-line prefer-const
   const playerScore = 0;
-  return (playerScore, mark);
+  return { playerScore, mark };
 };
 
-// create game
-const newGame = () => {
-  const gameArray = ['', '', '', '', '', '', '', '', ''];
-  const playerOneScoreDiv = document.querySelector('#player-one-score');
-  const playerTwoScoreDiv = document.querySelector('#player-two-score');
-  const playerOne = newPlayer('x');
-  const playerTwo = newPlayer('o');
+const playerOne = newPlayer('x');
+const playerTwo = newPlayer('o');
 
-  const popBoard = () => {
-    const gameBoard = document.querySelector('#board');
-    for (let i = 0; i < 9; i++) {
-      const newSquare = document.createElement('div');
-      newSquare.textContent = gameArray[i];
-      gameBoard.appendChild(newSquare);
-    }
-  };
-  return { playerOne, playerTwo };
+const gameObject = {
+  gameArray: ['', '', '', '', '', '', '', '', ''],
+  playNumber: 0,
 };
-
-const gameObject = newGame();
 
 // universal methods
 const gameMethods = (() => {
-// player win methods
+  const gameBoard = document.querySelector('#board');
+
+  const removeOld = (parent) => {
+    while (parent.firstChild) {
+      parent.removeChild(parent.firstChild);
+    }
+  };
+
+  const scorePop = (playerOneScore, playerTwoScore) => {
+    const playerOneScoreDiv = document.querySelector('#player-one-score');
+    const playerTwoScoreDiv = document.querySelector('#player-two-score');
+
+    playerOneScoreDiv.textContent = `Player One: ${playerOneScore}`;
+    playerTwoScoreDiv.textContent = `Player Two: ${playerTwoScore}`;
+  };
+
+  // player win methods
   const playerOneWin = () => {
-    gameObject.playerOne.playerScore++;
+    playerOne.playerScore++;
+    scorePop(playerOne.playerScore, playerTwo.playerScore);
+    gameObject.gameArray = ['', '', '', '', '', '', '', '', ''];
+    newScreen.style.visibility = 'visible';
   };
   const playerTwoWin = () => {
-    gameObject.playerTwo.playerScore++;
+    playerTwo.playerScore++;
+    scorePop(playerOne.playerScore, playerTwo.playerScore);
+    gameObject.gameArray = ['', '', '', '', '', '', '', '', ''];
+    newScreen.style.visibility = 'visible';
   };
 
   // win check
-  const winCheck = () => {
+  const winCheck = (array) => {
     const WINNING_COMBINATIONS = [
       [0, 1, 2],
       [3, 4, 5],
@@ -51,12 +64,35 @@ const gameMethods = (() => {
     ];
 
     for (let i = 0; i < WINNING_COMBINATIONS.length; i++) {
-      if (gameObject.gameArray[WINNING_COMBINATIONS[i][0]] === 'x' && gameObject.gameArray[WINNING_COMBINATIONS[i][1]] === 'x' && gameObject.gameArray[WINNING_COMBINATIONS[i][2]] === 'x') {
+      if (array[WINNING_COMBINATIONS[i][0]] === 'x' && array[WINNING_COMBINATIONS[i][1]] === 'x' && array[WINNING_COMBINATIONS[i][2]] === 'x') {
         playerOneWin();
-      } else if (gameObject.gameArray[WINNING_COMBINATIONS[i][0]] === 'o' && gameObject.gameArray[WINNING_COMBINATIONS[i][1]] === 'o' && gameObject.gameArray[WINNING_COMBINATIONS[i][2]] === 'o') {
+      } else if (array[WINNING_COMBINATIONS[i][0]] === 'o' && array[WINNING_COMBINATIONS[i][1]] === 'o' && array[WINNING_COMBINATIONS[i][2]] === 'o') {
         playerTwoWin();
       }
     }
   };
-  return { playerOneWin, playerTwoWin };
+
+  const popBoard = () => {
+    removeOld(gameBoard);
+    for (let i = 0; i < 9; i++) {
+      const newSquare = document.createElement('div');
+      newSquare.addEventListener('click', () => {
+        gameObject.gameArray.splice(i, 1, gameObject.playNumber % 2 === 0 ? 'x' : 'o');
+        popBoard();
+        gameObject.playNumber++;
+        winCheck(gameObject.gameArray);
+      });
+      newSquare.textContent = gameObject.gameArray[i];
+      gameBoard.appendChild(newSquare);
+    }
+  };
+  return {
+    winCheck, playerOneWin, playerTwoWin, popBoard,
+  };
 })();
+
+newGameBtn.addEventListener('click', () => {
+  gameMethods.popBoard();
+  newScreen.style.visibility = 'hidden';
+});
+gameMethods.popBoard();

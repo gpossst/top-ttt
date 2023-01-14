@@ -8,3 +8,35 @@
     column-gap: 5px;
     row-gap: 5px;
 }
+
+#new-game {
+    border: red solid 2px;
+    color: red;
+    background-color: black;
+    border-radius: 6px;
+    width: 100px;
+    height: 30px;
+    text-align: center;
+    margin-right: 60px;
+    margin-bottom: 50px;
+}
+
+#board > div {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 100px;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+#new-screen {
+    position: absolute;
+    width: 110vw;
+    height: 130vh;
+    background-color: black;
+    margin-top: -70vh;
+    visibility: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
