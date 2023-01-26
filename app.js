@@ -21,6 +21,13 @@ const gameObject = {
 // universal methods
 const gameMethods = (() => {
   const gameBoard = document.querySelector('#board');
+  const showPlayerOne = document.querySelector('#show-player-one');
+  const showPlayerTwo = document.querySelector('#show-player-two');
+
+  const newScreenPop = () => {
+    showPlayerOne.textContent = `Player One Score: ${playerOne.playerScore}`;
+    showPlayerTwo.textContent = `Player Two Score: ${playerTwo.playerScore}`;
+  };
 
   const removeOld = (parent) => {
     while (parent.firstChild) {
@@ -41,12 +48,14 @@ const gameMethods = (() => {
     playerOne.playerScore++;
     scorePop(playerOne.playerScore, playerTwo.playerScore);
     gameObject.gameArray = ['', '', '', '', '', '', '', '', ''];
+    newScreenPop();
     newScreen.style.visibility = 'visible';
   };
   const playerTwoWin = () => {
     playerTwo.playerScore++;
     scorePop(playerOne.playerScore, playerTwo.playerScore);
     gameObject.gameArray = ['', '', '', '', '', '', '', '', ''];
+    newScreenPop();
     newScreen.style.visibility = 'visible';
   };
 
@@ -72,6 +81,17 @@ const gameMethods = (() => {
     }
   };
 
+  // figure this out
+  const tieCheck = (array) => {
+    for (let i = 0; i < array.length; i++) {
+      if (array[i] === '') {
+        break;
+      } else if (i === 8) {
+        newScreen.style.visibility = 'visible';
+      }
+    }
+  };
+
   const popBoard = () => {
     removeOld(gameBoard);
     for (let i = 0; i < 9; i++) {
@@ -81,6 +101,7 @@ const gameMethods = (() => {
         popBoard();
         gameObject.playNumber++;
         winCheck(gameObject.gameArray);
+        tieCheck(gameObject.gameArray);
       });
       newSquare.textContent = gameObject.gameArray[i];
       gameBoard.appendChild(newSquare);
@@ -92,6 +113,7 @@ const gameMethods = (() => {
 })();
 
 newGameBtn.addEventListener('click', () => {
+  gameObject.gameArray = ['', '', '', '', '', '', '', '', ''];
   gameMethods.popBoard();
   newScreen.style.visibility = 'hidden';
 });
